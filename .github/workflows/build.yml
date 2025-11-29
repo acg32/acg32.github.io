@@ -25,18 +25,19 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install deps
-        run: pip install -r requirements.txt
-        # or just: pip install jinja2
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: "latest"
 
       - name: Run build
-        run: python build.py
+        run: uv run build.py
 
       - name: Fail if build/ is dirty (PRs only)
         if: github.event_name == 'pull_request'
         run: |
           if ! git diff --quiet -- build/; then
-            echo "::error::build/ is not up to date. Run 'python build.py' and commit the changes."
+            echo "::error::build/ is not up to date. Run 'uv run build.py' and commit the changes."
             git diff -- build/
             exit 1
           fi
@@ -47,3 +48,4 @@ jobs:
         with:
           commit_message: "chore: update built assets"
           file_pattern: build/*
+          add_options: "-f"
