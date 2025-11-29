@@ -11,7 +11,7 @@ Static site generated with Jinja2 templates.
 uv run build.py
 ```
 
-- Output goes to `build/`.
+- Output goes to `build/` and should be committed with your changes.
 - Page content lives in `pages/` and extends `templates/base.html`.
 - The shared navbar is defined once in `templates/navbar.html`; links are auto-built from the pages in `pages/` (everything except `index.html`), using the text before the dash in each page's `{% block title %}` as the label.
 - Static assets live in `static/` and are copied to `build/static/`.
