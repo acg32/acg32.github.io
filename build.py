@@ -52,6 +52,13 @@ def discover_pages() -> list[Path]:
         raise FileNotFoundError(f"Missing pages directory: {PAGES_DIR}")
     return sorted(PAGES_DIR.rglob("*.html"))
 
+# Optional per-page icon mapping for the navbar labels.
+NAV_ICONS: dict[str, str] = {
+    "about": "👤",
+    "projects": "🛠️",
+    "fun": "🎮",
+}
+
 
 def page_slug(relative_path: Path) -> str:
     # Use path segments to create a slug; nested pages get slugs like "blog-post".
@@ -88,6 +95,9 @@ def render_pages(env: Environment) -> None:
         if rel_path.name == "index.html":
             continue  # keep index as entrypoint, don't add to nav
         label = extract_title_label(page) or page_label(slug)
+        icon = NAV_ICONS.get(slug, "")
+        if icon:
+            label = f"{icon} {label}"
         nav_links.append(
             {
                 "id": slug,
