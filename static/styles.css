@@ -157,16 +157,16 @@ li {
         flex-direction: column;
         gap: 1rem;
     }
-    
+
     .nav-links {
         flex-wrap: wrap;
         justify-content: center;
     }
-    
+
     .hero h1 {
         font-size: 1.8rem;
     }
-    
+
     .container {
         padding: 1rem;
     }
