@@ -6,6 +6,15 @@ on:
   push:
     branches: [ main ]
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -29,7 +38,9 @@ jobs:
       - name: Run build
         run: uv run build.py
 
+      # PRs: fail if build/ differs from what is committed
       - name: Ensure build/ matches committed files
+        if: github.event_name == 'pull_request'
         run: |
           if git status --porcelain build/ | grep .; then
             echo "::error::build/ is not up to date. Run 'uv run build.py' and commit the generated build/ directory."
@@ -37,3 +48,24 @@ jobs:
             git diff -- build/ || true
             exit 1
           fi
+
+      # Push to main: upload build/ as Pages artifact
+      - name: Upload Pages artifact
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./build
+
+  deploy:
+    # Only deploy on push to main
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
