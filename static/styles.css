@@ -47,6 +47,11 @@ body {
     background-color: #34495e;
 }
 
+.nav-links a.active {
+    background-color: #415b76;
+    font-weight: 600;
+}
+
 /* Main Container */
 .container {
     max-width: 900px;

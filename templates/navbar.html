@@ -1,0 +1,12 @@
+<nav class="navbar">
+    <div class="nav-brand">
+        <a href="{{ home_href | default('index.html') }}">{{ brand_icon | default('🏠') }} {{ site_name | default('Home') }}</a>
+    </div>
+    <ul class="nav-links">
+        {% for link in nav_links %}
+        <li>
+            <a href="{{ link.href }}" {% if link.id == active_nav %}class="active"{% endif %}>{{ link.label }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+</nav>
