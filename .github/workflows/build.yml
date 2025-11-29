@@ -1,27 +1,49 @@
-name: Build Site
+name: Build static site
 
 on:
-  push:
-    branches: [main]
   pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@v3
         with:
-          version: "latest"
+          # IMPORTANT: fetch full history so auto-commit has something to commit against
+          fetch-depth: 0
 
-      - name: Build site good
-        run: uv run build.py
-
-      - name: Upload build output
-        uses: actions/upload-artifact@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          name: site-build
-          path: build/
+          python-version: "3.12"
+
+      - name: Install deps
+        run: pip install -r requirements.txt
+        # or just: pip install jinja2
+
+      - name: Run build
+        run: python build.py
+
+      - name: Fail if build/ is dirty (PRs only)
+        if: github.event_name == 'pull_request'
+        run: |
+          if ! git diff --quiet -- build/; then
+            echo "::error::build/ is not up to date. Run 'python build.py' and commit the changes."
+            git diff -- build/
+            exit 1
+          fi
+
+      - name: Auto-commit updated build/ (main only)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: update built assets"
+          file_pattern: build/*
