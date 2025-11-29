@@ -1,27 +1,51 @@
-name: Build Site
+name: Build static site
 
 on:
-  push:
-    branches: [main]
   pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # IMPORTANT: fetch full history so auto-commit has something to commit against
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
 
       - name: Install uv
         uses: astral-sh/setup-uv@v3
         with:
           version: "latest"
 
-      - name: Build site good
+      - name: Run build
         run: uv run build.py
 
-      - name: Upload build output
-        uses: actions/upload-artifact@v4
+      - name: Fail if build/ is dirty (PRs only)
+        if: github.event_name == 'pull_request'
+        run: |
+          if ! git diff --quiet -- build/; then
+            echo "::error::build/ is not up to date. Run 'uv run build.py' and commit the changes."
+            git diff -- build/
+            exit 1
+          fi
+
+      - name: Auto-commit updated build/ (main only)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          name: site-build
-          path: build/
+          commit_message: "chore: update built assets"
+          file_pattern: build/*
+          add_options: "-f"
