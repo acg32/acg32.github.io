@@ -4,26 +4,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About - My Personal Space</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#0d8ecf",
+                        surface: "#f8fafc",
+                    },
+                },
+            },
+        };
+    </script>
     <link rel="stylesheet" href="static/styles.css">
 </head>
-<body>
-<nav class="navbar">
-    <div class="nav-brand">
-        <a href="index.html">🏠 Home</a>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
+<nav class="bg-slate-900 text-white shadow-md">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+        <div class="text-lg font-semibold tracking-tight">
+            <a href="index.html" class="hover:text-primary transition-colors">
+                🏠 Home
+            </a>
+        </div>
+        <ul class="flex items-center gap-4 sm:gap-6">
+        <li>
+            <a
+                href="about.html"
+                class="px-3 py-2 rounded-md text-sm font-medium transition-colors bg-slate-800 text-primary"
+            >👤 About</a>
+        </li>
+        <li>
+            <a
+                href="fun.html"
+                class="px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-slate-800"
+            >🎮 Fun Stuff</a>
+        </li>
+        <li>
+            <a
+                href="projects.html"
+                class="px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-slate-800"
+            >🛠️ Projects</a>
+        </li>
+        <li>
+            <a
+                href="rl-estimator.html"
+                class="px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-slate-800"
+            >RL Estimator</a>
+        </li>
+        </ul>
     </div>
-    <ul class="nav-links">
-        <li>
-            <a href="about.html" class="active">👤 About</a>
-        </li>
-        <li>
-            <a href="fun.html" >🎮 Fun Stuff</a>
-        </li>
-        <li>
-            <a href="projects.html" >🛠️ Projects</a>
-        </li>
-    </ul>
 </nav>
-    <main class="container">
+    <main class="container max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 flex-1">
 <section>
     <h2>👋 About Me</h2>
     <p>Welcome to my personal space on the web!</p>
@@ -37,7 +69,7 @@
 </section>
     </main>
 
-    <footer class="footer">
+    <footer class="footer bg-slate-900 text-slate-100 text-center py-6 mt-10">
         <p>&copy; 2025 My Personal Space</p>
     </footer>
 

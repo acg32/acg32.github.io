@@ -1,12 +1,19 @@
-<nav class="navbar">
-    <div class="nav-brand">
-        <a href="{{ home_href | default('index.html') }}">{{ brand_icon | default('🏠') }} {{ site_name | default('Home') }}</a>
-    </div>
-    <ul class="nav-links">
+<nav class="bg-slate-900 text-white shadow-md">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+        <div class="text-lg font-semibold tracking-tight">
+            <a href="{{ home_href | default('index.html') }}" class="hover:text-primary transition-colors">
+                {{ brand_icon | default('🏠') }} {{ site_name | default('Home') }}
+            </a>
+        </div>
+        <ul class="flex items-center gap-4 sm:gap-6">
         {% for link in nav_links %}
         <li>
-            <a href="{{ link.href }}" {% if link.id == active_nav %}class="active"{% endif %}>{{ link.label }}</a>
+            <a
+                href="{{ link.href }}"
+                class="px-3 py-2 rounded-md text-sm font-medium transition-colors {% if link.id == active_nav %}bg-slate-800 text-primary{% else %}hover:bg-slate-800{% endif %}"
+            >{{ link.label }}</a>
         </li>
         {% endfor %}
-    </ul>
+        </ul>
+    </div>
 </nav>
