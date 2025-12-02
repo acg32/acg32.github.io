@@ -4,386 +4,162 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RL Estimator - My Personal Space</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#0d8ecf",
+                        surface: "#f8fafc",
+                    },
+                },
+            },
+        };
+    </script>
     <link rel="stylesheet" href="static/styles.css">
 </head>
-<body>
-<nav class="navbar">
-    <div class="nav-brand">
-        <a href="index.html">🏠 Home</a>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
+<nav class="bg-slate-900 text-white shadow-md">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+        <div class="text-lg font-semibold tracking-tight">
+            <a href="index.html" class="hover:text-primary transition-colors">
+                🏠 Home
+            </a>
+        </div>
+        <ul class="flex items-center gap-4 sm:gap-6">
+        <li>
+            <a
+                href="about.html"
+                class="px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-slate-800"
+            >👤 About</a>
+        </li>
+        <li>
+            <a
+                href="fun.html"
+                class="px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-slate-800"
+            >🎮 Fun Stuff</a>
+        </li>
+        <li>
+            <a
+                href="projects.html"
+                class="px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-slate-800"
+            >🛠️ Projects</a>
+        </li>
+        <li>
+            <a
+                href="rl-estimator.html"
+                class="px-3 py-2 rounded-md text-sm font-medium transition-colors bg-slate-800 text-primary"
+            >RL Estimator</a>
+        </li>
+        </ul>
     </div>
-    <ul class="nav-links">
-        <li>
-            <a href="about.html" >👤 About</a>
-        </li>
-        <li>
-            <a href="fun.html" >🎮 Fun Stuff</a>
-        </li>
-        <li>
-            <a href="projects.html" >🛠️ Projects</a>
-        </li>
-        <li>
-            <a href="rl-estimator.html" class="active">RL Estimator</a>
-        </li>
-    </ul>
 </nav>
-    <main class="container">
-<style>
-    .estimator-hero {
-        background: linear-gradient(135deg, #1f497d 0%, #0d8ecf 100%);
-        color: white;
-        padding: 2.5rem;
-        border-radius: 10px;
-        margin-bottom: 2rem;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-    }
+    <main class="container max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 flex-1">
+<section class="max-w-5xl mx-auto space-y-8 py-8">
+    <div class="rounded-2xl bg-slate-900 text-white p-8 shadow-lg">
+        <p class="text-sm uppercase tracking-wide text-slate-300">GPU budgeting</p>
+        <h1 class="mt-3 text-3xl font-semibold">RL estimator</h1>
+        <p class="mt-2 text-slate-200">Compute the best split between training and inference GPUs and the actors required to maximize throughput.</p>
+    </div>
 
-    .estimator-hero h1 {
-        font-size: 2rem;
-        margin-bottom: 0.5rem;
-    }
+    <div class="grid gap-4 md:grid-cols-2">
+        <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm space-y-3">
+            <p class="text-xs uppercase tracking-wide text-slate-500 font-semibold">General</p>
+            <label class="block text-sm font-medium text-slate-700" for="input-totalGpus">Total GPUs</label>
+            <input id="input-totalGpus" type="number" min="1" step="1" value="16" class="w-full rounded-md border border-slate-300 px-3 py-2">
 
-    .estimator-grid {
-        display: grid;
-        grid-template-columns: 1.1fr 0.9fr;
-        gap: 1.25rem;
-        margin-bottom: 1.5rem;
-    }
+        </div>
 
-    .card {
-        background: white;
-        border-radius: 10px;
-        padding: 1.25rem;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
-        border: 1px solid #e5e7eb;
-    }
+        <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm space-y-3">
+            <p class="text-xs uppercase tracking-wide text-slate-500 font-semibold">Trainer</p>
+            <label class="block text-sm font-medium text-slate-700" for="input-trainerGpusPerReplica">GPUs per replica</label>
+            <input id="input-trainerGpusPerReplica" type="number" min="0" step="1" value="1" class="w-full rounded-md border border-slate-300 px-3 py-2">
 
-    .card h2 {
-        margin-bottom: 1rem;
-        color: #1f2937;
-        border-bottom: 2px solid #0d8ecf;
-        padding-bottom: 0.35rem;
-        font-size: 1.1rem;
-    }
-
-    .input-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 0.9rem;
-    }
-
-    .input-field label {
-        display: block;
-        font-weight: 600;
-        color: #1f2937;
-        margin-bottom: 0.35rem;
-    }
-
-    .input-field input {
-        width: 100%;
-        padding: 0.65rem;
-        border-radius: 6px;
-        border: 1px solid #cfd8e3;
-        font-size: 1rem;
-    }
-
-    .input-hint {
-        font-size: 0.9rem;
-        color: #6b7280;
-        margin-top: 0.25rem;
-    }
-
-    .stat {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0.75rem 1rem;
-        border-radius: 8px;
-        background: #f8fafc;
-        margin-bottom: 0.6rem;
-        border: 1px dashed #dbeafe;
-    }
-
-    .stat strong {
-        color: #0f172a;
-    }
-
-    .stat span {
-        color: #0d8ecf;
-        font-weight: 700;
-    }
-
-    .badge {
-        display: inline-block;
-        padding: 0.35rem 0.65rem;
-        border-radius: 999px;
-        background: #e0f2fe;
-        color: #0369a1;
-        font-weight: 700;
-        font-size: 0.95rem;
-    }
-
-    .flow-diagram {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        flex-wrap: wrap;
-        justify-content: center;
-        padding: 1.25rem;
-        background: #f1f5f9;
-        border-radius: 12px;
-        border: 1px solid #e2e8f0;
-    }
-
-    .node {
-        min-width: 150px;
-        background: white;
-        padding: 0.9rem;
-        border-radius: 10px;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
-        border: 1px solid #e5e7eb;
-        text-align: center;
-    }
-
-    .node h3 {
-        margin-bottom: 0.4rem;
-        color: #0f172a;
-        font-size: 1rem;
-    }
-
-    .node .value {
-        font-size: 1.2rem;
-        font-weight: 700;
-        color: #0d8ecf;
-    }
-
-    .node small {
-        color: #6b7280;
-    }
-
-    .arrow {
-        font-size: 1.4rem;
-        color: #475569;
-    }
-
-    .diagram-note {
-        margin-top: 0.75rem;
-        color: #475569;
-    }
-
-    .assumptions ul {
-        margin-top: 0.5rem;
-    }
-
-    @media (max-width: 900px) {
-        .estimator-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-</style>
-
-<section class="estimator-hero">
-    <h1>RL Estimator</h1>
-    <p>Estimate how many rollout actors you need when splitting GPUs between training and inference for PPO with long-running rollouts (~2 minutes each).</p>
-</section>
-
-<section class="estimator-grid">
-    <div class="card">
-        <h2>Inputs</h2>
-        <div class="input-grid">
-            <div class="input-field">
-                <label for="totalGpus">Total GPUs available</label>
-                <input id="totalGpus" type="number" step="0.1" value="8">
-                <div class="input-hint">Overall pool before splitting between training and inference.</div>
-            </div>
-            <div class="input-field">
-                <label for="trainingShare">Training share (%)</label>
-                <input id="trainingShare" type="number" step="1" value="40">
-                <div class="input-hint">Remainder automatically goes to inference.</div>
-            </div>
-            <div class="input-field">
-                <label for="actorGpu">GPU per actor for inference</label>
-                <input id="actorGpu" type="number" step="0.01" value="0.1">
-                <div class="input-hint">Fraction of an inference GPU a single actor needs.</div>
-            </div>
-            <div class="input-field">
-                <label for="rolloutMinutes">Rollout duration (minutes)</label>
-                <input id="rolloutMinutes" type="number" step="0.1" value="2">
-                <div class="input-hint">Long-running actors will parallelize heavily here.</div>
-            </div>
-            <div class="input-field">
-                <label for="stepsPerRollout">Steps per rollout</label>
-                <input id="stepsPerRollout" type="number" step="1" value="2048">
-                <div class="input-hint">Per-actor trajectory length per PPO update.</div>
-            </div>
-            <div class="input-field">
-                <label for="batchSize">Target batch size (samples/update)</label>
-                <input id="batchSize" type="number" step="512" value="32768">
-                <div class="input-hint">Typical PPO minibatch accumulation target.</div>
-            </div>
-            <div class="input-field">
-                <label for="updatesPerHour">Trainer updates per hour</label>
-                <input id="updatesPerHour" type="number" step="0.1" value="4">
-                <div class="input-hint">How often you want to run PPO updates.</div>
-            </div>
+            <label class="block text-sm font-medium text-slate-700" for="input-trainerTrajPerSPerReplica">Traj/s per replica</label>
+            <input id="input-trainerTrajPerSPerReplica" type="number" min="0.001" step="0.1" value="5" class="w-full rounded-md border border-slate-300 px-3 py-2">
         </div>
     </div>
 
-    <div class="card">
-        <h2>Suggested layout</h2>
-        <div class="stat">
-            <strong>Recommended actors</strong>
-            <span id="recommendedActors" class="badge">–</span>
+    <div class="grid gap-4 md:grid-cols-2">
+        <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm space-y-3">
+            <p class="text-xs uppercase tracking-wide text-slate-500 font-semibold">Inference</p>
+            <label class="block text-sm font-medium text-slate-700" for="input-inferenceGpusPerReplica">GPUs per block</label>
+            <input id="input-inferenceGpusPerReplica" type="number" min="0" step="1" value="1" class="w-full rounded-md border border-slate-300 px-3 py-2">
+
+            <label class="block text-sm font-medium text-slate-700" for="input-inferenceReqsPerSPerReplica">Env steps/s per block</label>
+            <input id="input-inferenceReqsPerSPerReplica" type="number" min="1" step="50" value="2000" class="w-full rounded-md border border-slate-300 px-3 py-2">
         </div>
-        <div class="stat">
-            <strong>Actors to keep trainer busy</strong>
-            <span id="actorsForThroughput">–</span>
-        </div>
-        <div class="stat">
-            <strong>Actors fitting on inference GPUs</strong>
-            <span id="actorCapacity">–</span>
-        </div>
-        <div class="stat">
-            <strong>Training / Inference GPUs</strong>
-            <span><span id="trainingGpu">–</span> / <span id="inferenceGpu">–</span></span>
-        </div>
-        <div class="stat">
-            <strong>Samples needed per minute</strong>
-            <span id="samplesNeeded">–</span>
+
+        <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm space-y-3">
+            <p class="text-xs uppercase tracking-wide text-slate-500 font-semibold">Actor</p>
+            <label class="block text-sm font-medium text-slate-700" for="input-actorStepsPerTraj">Steps per trajectory</label>
+            <input id="input-actorStepsPerTraj" type="number" min="1" step="1" value="30" class="w-full rounded-md border border-slate-300 px-3 py-2">
+
+            <label class="block text-sm font-medium text-slate-700" for="input-actorStepsPerS">Env steps/s per actor</label>
+            <input id="input-actorStepsPerS" type="number" min="0.001" step="0.1" value="2" class="w-full rounded-md border border-slate-300 px-3 py-2">
         </div>
     </div>
-</section>
 
-<section class="card">
-    <h2>Data flow</h2>
-    <div class="flow-diagram">
-        <div class="node">
-            <h3>Actors</h3>
-            <div class="value" id="actorsNode">–</div>
-            <small id="actorRateText">Rollout throughput</small>
+    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div class="flex items-center justify-between gap-4">
+            <div>
+                <p class="text-xs uppercase tracking-wide text-slate-500 font-semibold">Pipeline</p>
+                <p class="text-lg font-semibold text-slate-900">Throughput and bottlenecks</p>
+                <p class="text-sm text-slate-600">Cards highlight the bottleneck with a light red background.</p>
+            </div>
         </div>
-        <div class="arrow">→</div>
-        <div class="node">
-            <h3>Rollout Storage</h3>
-            <div class="value" id="storageRate">–</div>
-            <small>samples/min aggregated</small>
+
+        <div class="mt-4 grid gap-3 sm:grid-cols-2">
+            <div class="rounded-lg border border-slate-200 bg-slate-50 p-4">
+                <p class="text-xs uppercase tracking-wide text-slate-500 font-semibold">Training speed</p>
+                <p class="text-lg font-semibold text-slate-900"><span data-field="pipeline-train-traj">–</span> traj/s</p>
+                <p class="text-sm text-slate-600"><span data-field="pipeline-train-samples">–</span> examples/s</p>
+            </div>
+            <div class="rounded-lg border border-slate-200 bg-slate-50 p-4">
+                <p class="text-xs uppercase tracking-wide text-slate-500 font-semibold">Rollout speed</p>
+                <p class="text-lg font-semibold text-slate-900"><span data-field="pipeline-rollout-traj">–</span> traj/s</p>
+                <p class="text-sm text-slate-600"><span data-field="pipeline-rollout-samples">–</span> examples/s</p>
+            </div>
         </div>
-        <div class="arrow">→</div>
-        <div class="node">
-            <h3>Trainer</h3>
-            <div class="value" id="trainerRate">–</div>
-            <small>samples/min target</small>
+
+        <div class="mt-5 grid gap-4 md:grid-cols-3">
+            <div id="node-actors" class="rounded-xl border border-slate-200 bg-slate-50 p-4 shadow-sm transition-all">
+                <p class="text-xs uppercase tracking-wide text-slate-500 font-semibold">Actors</p>
+                <p class="mt-2 text-3xl font-semibold text-slate-900"><span data-field="actors">–</span></p>
+                <p class="mt-1 text-sm text-slate-600">Rollout rate <span data-field="actorsRate">–</span> traj/s</p>
+                <p class="text-sm text-slate-600">Env steps demand <span data-field="actorsDemand">–</span></p>
+            </div>
+
+            <div id="node-inference" class="rounded-xl border border-slate-200 bg-slate-50 p-4 shadow-sm transition-all">
+                <p class="text-xs uppercase tracking-wide text-slate-500 font-semibold">Inference</p>
+                <p class="mt-2 text-3xl font-semibold text-slate-900"><span data-field="nI">–</span> blocks</p>
+                <p class="mt-1 text-sm text-slate-600">Steps capacity <span data-field="infRate">–</span> traj/s</p>
+                <p class="text-sm text-slate-600">GPU share <span data-field="gI">–</span> GPUs</p>
+            </div>
+
+            <div id="node-trainer" class="rounded-xl border border-slate-200 bg-slate-50 p-4 shadow-sm transition-all">
+                <p class="text-xs uppercase tracking-wide text-slate-500 font-semibold">Trainer</p>
+                <p class="mt-2 text-3xl font-semibold text-slate-900"><span data-field="nT">–</span> replicas</p>
+                <p class="mt-1 text-sm text-slate-600">Trainer rate <span data-field="trainRate">–</span> traj/s</p>
+                <p class="text-sm text-slate-600">GPU share <span data-field="gT">–</span> GPUs</p>
+            </div>
         </div>
-        <div class="arrow">→</div>
-        <div class="node">
-            <h3>Inference</h3>
-            <div class="value" id="inferenceBudget">–</div>
-            <small>GPU budget for actors</small>
-        </div>
-        <div class="arrow">↺</div>
     </div>
-    <p class="diagram-note">Actors generate long rollouts that land in storage, the trainer consumes them, and inference GPUs serve fresh policies back to the actors. Increase actor count to keep the trainer saturated when rollouts take minutes.</p>
-</section>
-
-<section class="card assumptions">
-    <h2>Assumptions and how this works</h2>
-    <ul>
-        <li>Throughput-driven: actors needed = ceil((updates/hour × batch size) / (samples per rollout ÷ rollout minutes × 60)).</li>
-        <li>Capacity check: inference GPUs = total × (1 - training share). Actors fitting = floor(inference GPUs ÷ actor GPU need).</li>
-        <li>Rollout-heavy PPO: default 2 minute rollouts highlight the parallelism required to keep a single trainer busy.</li>
-        <li>Adjust GPU-per-actor to reflect model size or on-policy action frequency; this quickly shows if inference becomes the bottleneck.</li>
-    </ul>
 </section>
     </main>
 
-    <footer class="footer">
+    <footer class="footer bg-slate-900 text-slate-100 text-center py-6 mt-10">
         <p>&copy; 2025 My Personal Space</p>
     </footer>
 
+<script src="static/rl-estimator.js"></script>
 <script>
-    const inputs = {
-        totalGpus: document.getElementById('totalGpus'),
-        trainingShare: document.getElementById('trainingShare'),
-        actorGpu: document.getElementById('actorGpu'),
-        rolloutMinutes: document.getElementById('rolloutMinutes'),
-        stepsPerRollout: document.getElementById('stepsPerRollout'),
-        batchSize: document.getElementById('batchSize'),
-        updatesPerHour: document.getElementById('updatesPerHour'),
-    };
-
-    const outputs = {
-        recommendedActors: document.getElementById('recommendedActors'),
-        actorsForThroughput: document.getElementById('actorsForThroughput'),
-        actorCapacity: document.getElementById('actorCapacity'),
-        trainingGpu: document.getElementById('trainingGpu'),
-        inferenceGpu: document.getElementById('inferenceGpu'),
-        samplesNeeded: document.getElementById('samplesNeeded'),
-        actorsNode: document.getElementById('actorsNode'),
-        actorRateText: document.getElementById('actorRateText'),
-        storageRate: document.getElementById('storageRate'),
-        trainerRate: document.getElementById('trainerRate'),
-        inferenceBudget: document.getElementById('inferenceBudget'),
-    };
-
-    function parseNumber(input, fallback) {
-        const value = parseFloat(input.value);
-        return Number.isFinite(value) ? value : fallback;
-    }
-
-    function clampPercent(value) {
-        if (Number.isNaN(value)) return 0;
-        return Math.min(100, Math.max(0, value));
-    }
-
-    function toDisplay(value, digits = 1) {
-        if (!Number.isFinite(value)) return '–';
-        const rounded = Number.isInteger(value) ? value : value.toFixed(digits);
-        return rounded.toString();
-    }
-
-    function recalc() {
-        const totalGpus = Math.max(0, parseNumber(inputs.totalGpus, 0));
-        const trainingShare = clampPercent(parseNumber(inputs.trainingShare, 0));
-        const actorGpu = Math.max(0.001, parseNumber(inputs.actorGpu, 0.1));
-        const rolloutMinutes = Math.max(0.01, parseNumber(inputs.rolloutMinutes, 2));
-        const stepsPerRollout = Math.max(1, parseNumber(inputs.stepsPerRollout, 2048));
-        const batchSize = Math.max(1, parseNumber(inputs.batchSize, 32768));
-        const updatesPerHour = Math.max(0, parseNumber(inputs.updatesPerHour, 4));
-
-        const trainingGpu = (totalGpus * trainingShare) / 100;
-        const inferenceGpu = Math.max(0, totalGpus - trainingGpu);
-
-        const actorSamplesPerMinute = (stepsPerRollout / rolloutMinutes);
-        const targetSamplesPerMinute = (batchSize * updatesPerHour) / 60;
-        const actorsNeededForThroughput = targetSamplesPerMinute > 0 && actorSamplesPerMinute > 0
-            ? Math.ceil(targetSamplesPerMinute / actorSamplesPerMinute)
-            : 0;
-
-        const actorCapacity = inferenceGpu > 0 ? Math.floor(inferenceGpu / actorGpu) : 0;
-        const recommendedActors = actorCapacity > 0
-            ? Math.min(actorCapacity, actorsNeededForThroughput || 1)
-            : 0;
-        const gpuLimited = actorCapacity > 0 && actorsNeededForThroughput > actorCapacity;
-
-        const achievedSamplesPerMinute = recommendedActors * actorSamplesPerMinute;
-
-        outputs.recommendedActors.textContent = recommendedActors > 0
-            ? (gpuLimited ? `${toDisplay(recommendedActors, 0)} (GPU limited)` : toDisplay(recommendedActors, 0))
-            : 'Add inference GPU';
-        outputs.actorsForThroughput.textContent = actorsNeededForThroughput > 0 ? toDisplay(actorsNeededForThroughput, 0) : 'Set params';
-        outputs.actorCapacity.textContent = actorCapacity > 0 ? toDisplay(actorCapacity, 0) : 'GPU limited';
-        outputs.trainingGpu.textContent = toDisplay(trainingGpu, 2) + ' GPU';
-        outputs.inferenceGpu.textContent = toDisplay(inferenceGpu, 2) + ' GPU';
-        outputs.samplesNeeded.textContent = toDisplay(targetSamplesPerMinute, 0) + ' / min';
-
-        outputs.actorsNode.textContent = recommendedActors > 0 ? toDisplay(recommendedActors, 0) + ' actors' : 'No capacity';
-        outputs.actorRateText.textContent = toDisplay(actorSamplesPerMinute, 0) + ' samples/min each';
-        outputs.storageRate.textContent = toDisplay(achievedSamplesPerMinute, 0);
-        outputs.trainerRate.textContent = toDisplay(targetSamplesPerMinute, 0);
-        outputs.inferenceBudget.textContent = toDisplay(inferenceGpu, 2) + ' GPU';
-    }
-
-    Object.values(inputs).forEach((input) => input.addEventListener('input', recalc));
-    recalc();
+    document.addEventListener('DOMContentLoaded', () => {
+        if (window.rlEstimator) {
+            window.rlEstimator.initPage();
+        }
+    });
 </script>
 </body>
 </html>
