@@ -4,16 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}My Personal Space{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#0d8ecf",
+                        surface: "#f8fafc",
+                    },
+                },
+            },
+        };
+    </script>
     <link rel="stylesheet" href="{{ static_css_path | default('styles.css') }}">
 </head>
-<body>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
     {% include "navbar.html" %}
 
-    <main class="container">
+    <main class="container max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 flex-1">
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="footer">
+    <footer class="footer bg-slate-900 text-slate-100 text-center py-6 mt-10">
         <p>&copy; {{ current_year }} My Personal Space</p>
     </footer>
 
